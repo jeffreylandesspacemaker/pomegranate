@@ -327,8 +327,8 @@ cdef class ConditionalProbabilityTable(MultivariateDistribution):
 					self.values[i] = _log(cexp(self.values[i])*inertia +
 						probability*(1-inertia))
 
-				else:
-					self.values[i] = -_log(self.k)
+				#else:
+					#self.values[i] = -_log(self.k)
 
 		for i in range(self.n):
 			idx = self.keymap[tuple(self.parameters[0][i][:-1])]
@@ -396,7 +396,12 @@ cdef class ConditionalProbabilityTable(MultivariateDistribution):
 
 		table = []
 		for key in it.product(*keys):
-			table.append(list(key) + [1./len(keys[-1]),])
+			if key[-1] == 0:
+				table.append(list(key) + [1., ])
+			else:
+				table.append(list(key) + [0., ])
+			#print(table[-1])
+			#table.append(list(key) + [1./len(keys[-1]),])
 
 		d = ConditionalProbabilityTable(table, parents)
 		d.fit(X, weights, pseudocount=pseudocount)
